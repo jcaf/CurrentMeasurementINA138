@@ -43,56 +43,47 @@ struct _main_flag
 }main_flag = { 0,0 };
 
 
-float current = 5.98f;
-char *pc =  (char *) &current;
-
-float currentD=0.0f;
-char *pcd =  (char *) &currentD;
-
 #define TRAMA_START '@'
 #define TRAMA_END 	'\n'
-#define TRAMA_PAYLOAD_SIZEMAX    sizeof(float)//determinado por el compilador
+void USART_txdata(const char *str);
 
 int main(void)
 {
     //ADS1115 init
     I2C_unimaster_init(100E3);//100KHz
+
+    ////ADS1115 init set config
     uint8_t reg[2];
-
-    //++--Write config
-    reg[0] = (1<<OS_BIT) | (MUX_AIN0_GND<<MUX_BIT) | (PGA_0p256V<<PGA_BIT) | (CONTINUOUS_CONV<<MODE_BIT);//PGA 4.096V -> RESOL=125 μV
-    //reg[1] = (DR_860SPS<<DR_BIT);
+    reg[0] = (1<<OS_BIT) | (MUX_AIN0_GND<<MUX_BIT) | (PGA_0p256V<<PGA_BIT) | (CONTINUOUS_CONV<<MODE_BIT);
     reg[1] = (DR_8SPS<<DR_BIT);//Menor ruido
-
     I2Ccfx_WriteArray(ADS115_ADR_GND, ADS1115_CONFIG_REG, &reg[0], 2);
-    //default state of ConfigRegister = 0x8583 = 34179
 
     USART_Init ( MYUBRR );
 
-    char str[20];
-
-
+	#define NUM_SAMPLES 200
+    float current = 0;
+    float current_acc = 0;
+    float current_media = 0;
+    char current_media_str[20];
     while (1)
     {
-		current = currentMeas();
-
-		current *=1000;
-
-
-		dtostrf(current, 0, 2, str);
-		usart_println_string(str);
-
-/*		USART_Transmit(TRAMA_START);
-		for (int i=0; i<4; i++)
+    	current_acc=0;
+    	for (int i=0; i<NUM_SAMPLES; i++)
 		{
-			USART_Transmit(pc[i]);
-			//USART_Transmit(str);
-			//usart_print_string(str)
+    		current = currentMeas();
+    		current_acc += current;
 		}
-		//USART_Transmit('TRAMA_END');
-*/
+    	current_media = (current_acc/NUM_SAMPLES);
+    	//
+		current_media *=1000;	//expresarlo en milivoltios
+		dtostrf(current_media, 0, 2, current_media_str);
+		USART_txdata(current_media_str);
 		__delay_ms(10);
     }
-
 }
 
+void USART_txdata(const char *str)
+{
+	USART_Transmit(TRAMA_START);
+	usart_println_string(str);
+}

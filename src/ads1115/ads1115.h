@@ -36,7 +36,7 @@
     //#define PGA_0p256V  0x07
 
     //Data rate
-    #define DR_8SPS     0x00
+    #define DR_8SPS     0x00	//menor ruido
     #define DR_16SPS    0x01
     #define DR_32SPS    0x02
     #define DR_64SPS    0x03

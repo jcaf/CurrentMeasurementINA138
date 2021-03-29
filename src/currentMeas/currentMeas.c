@@ -29,23 +29,15 @@ float currentMeas(void)
     uint8_t reg[2];
     //
     float current=0;
-char b[10];
-char str[20];
-
     I2Ccfx_ReadRegistersAtAddress(ADS115_ADR_GND, ADS1115_CONVRS_REG, &reg[0], 2);
     ib16 = (reg[0]<<8) + reg[1];
-    //
-    //itoa(ib16, b, 10);
-    //
-    current = (ib16 * P_GAIN) + 0.0101;
-    //
-    //dtostrf(current, 0, 5, str);
-    //usart_println_string(str);
+    //current = (ib16 * P_GAIN) + CURRENT_DEVIATION;//0.0101;
+    current = (ib16 * P_GAIN);
+    if (current > 0.005f)
+    {
+    	 current+= CURRENT_DEVIATION;//aplica +desviacion
+    }
 
     current/=(RSHUNT*GM*RL);
-
-    //dtostrf(current, 0, 5, str);
-	//usart_println_string(str);
-
 	return current;
 }

@@ -15,8 +15,8 @@ unsigned char USART_Receive( void );
 void USART_Flush( void );
 
 #define FOSC F_CPU // Clock Speed
-#define BAUD 9600//ok
-//#define BAUD 38400 //ok
+//#define BAUD 9600//ok
+#define BAUD 38400 //ok
 //#define BAUD 76800 //ok, queda + 6N137M Tx Rx optocouplers
 #define MYUBRR FOSC/16/BAUD-1
 
