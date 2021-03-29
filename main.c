@@ -78,7 +78,6 @@ int main(void)
 		current_media *=1000;	//expresarlo en milivoltios
 		dtostrf(current_media, 0, 2, current_media_str);
 		USART_txdata(current_media_str);
-		__delay_ms(10);
     }
 }
 
