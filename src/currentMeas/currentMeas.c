@@ -14,7 +14,8 @@
 #include "../i2c/I2CCommonFx.h"
 #define P_GAIN (0.256f/32768)
 
-#define CURRENT_DEVIATION 0.0101//mV
+//#define CURRENT_DEVIATION 0.0101//mV jcaf
+#define CURRENT_DEVIATION 0.00843//mV Wilfredo
 
 #define IsRs 5.6e-3f
 #define Is_medida 107.2e-3f
